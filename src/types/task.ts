@@ -6,6 +6,7 @@ export interface Task {
   sharepointId: string;
   responsible: string;
   involved: string[];
+  startDate: string;
   deadline: string;
   status: TaskStatus;
   description?: string;
@@ -18,6 +19,7 @@ export interface TaskFormData {
   sharepointId: string;
   responsible: string;
   involved: string[];
+  startDate: string;
   deadline: string;
   description?: string;
 }

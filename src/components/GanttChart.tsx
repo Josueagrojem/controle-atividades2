@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTask } from '@/contexts/TaskContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User, Hash, Users } from 'lucide-react';
+import { Calendar, User, Hash, Users, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TaskStatus } from '@/types/task';
 
@@ -34,15 +34,14 @@ export const GanttChart: React.FC<GanttChartProps> = ({
 
     if (filteredTasks.length === 0) return { tasks: [], dates: [], startDate: new Date(), endDate: new Date() };
 
-    const sortedTasks = [...filteredTasks].sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
-    
-    const allDates = sortedTasks.map(task => new Date(task.deadline));
+    // Calcular o range de datas considerando início e fim das tarefas
+    const allDates = filteredTasks.flatMap(task => [new Date(task.startDate), new Date(task.deadline)]);
     const startDate = new Date(Math.min(...allDates.map(d => d.getTime())));
     const endDate = new Date(Math.max(...allDates.map(d => d.getTime())));
     
     // Adicionar buffer de alguns dias
-    startDate.setDate(startDate.getDate() - 7);
-    endDate.setDate(endDate.getDate() + 7);
+    startDate.setDate(startDate.getDate() - 3);
+    endDate.setDate(endDate.getDate() + 3);
     
     const dates: Date[] = [];
     const currentDate = new Date(startDate);
@@ -54,15 +53,27 @@ export const GanttChart: React.FC<GanttChartProps> = ({
     
     const totalDays = dates.length;
     
-    const tasksWithPositions = sortedTasks.map(task => {
-      const taskDate = new Date(task.deadline);
-      const dayIndex = Math.floor((taskDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      const position = (dayIndex / totalDays) * 100;
+    const tasksWithPositions = filteredTasks.map(task => {
+      const taskStartDate = new Date(task.startDate);
+      const taskEndDate = new Date(task.deadline);
+      
+      // Calcular posição e largura da barra
+      const startDayIndex = Math.floor((taskStartDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const endDayIndex = Math.floor((taskEndDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      const startPosition = (startDayIndex / totalDays) * 100;
+      const endPosition = (endDayIndex / totalDays) * 100;
+      const width = endPosition - startPosition;
+      
+      // Calcular duração em dias
+      const duration = Math.ceil((taskEndDate.getTime() - taskStartDate.getTime()) / (1000 * 60 * 60 * 24));
       
       return {
         ...task,
-        position: Math.max(0, Math.min(100, position)),
-        isOverdue: taskDate < new Date() && task.status !== 'done'
+        startPosition: Math.max(0, startPosition),
+        width: Math.max(2, width), // Mínimo de 2% de largura
+        duration,
+        isOverdue: taskEndDate < new Date() && task.status !== 'done'
       };
     });
     
@@ -161,7 +172,11 @@ export const GanttChart: React.FC<GanttChartProps> = ({
                           </div>
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            <span>{formatDate(new Date(task.deadline))}</span>
+                            <span>{formatDate(new Date(task.startDate))} - {formatDate(new Date(task.deadline))}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>{task.duration} dia{task.duration !== 1 ? 's' : ''}</span>
                           </div>
                           {task.involved && task.involved.length > 0 && (
                             <div className="flex items-center gap-1">
@@ -194,6 +209,7 @@ export const GanttChart: React.FC<GanttChartProps> = ({
 
                     {/* Timeline Bar */}
                     <div className="relative h-6 bg-muted/30 rounded-full overflow-hidden">
+                      {/* Barra de duração da tarefa */}
                       <div 
                         className={cn(
                           "absolute top-0 h-full rounded-full transition-all duration-300",
@@ -201,16 +217,25 @@ export const GanttChart: React.FC<GanttChartProps> = ({
                           task.isOverdue && "bg-destructive"
                         )}
                         style={{
-                          left: `${Math.max(0, task.position - 2)}%`,
-                          width: '4%',
-                          minWidth: '8px'
+                          left: `${task.startPosition}%`,
+                          width: `${task.width}%`,
+                          minWidth: '12px'
                         }}
                       />
+                      {/* Marcador de início */}
                       <div 
-                        className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-foreground rounded-full border-2 border-background shadow-sm"
+                        className="absolute top-1/2 transform -translate-y-1/2 w-2 h-4 bg-foreground rounded-sm border border-background shadow-sm"
                         style={{
-                          left: `${task.position}%`,
-                          transform: 'translateX(-50%) translateY(-50%)'
+                          left: `${task.startPosition}%`,
+                          transform: 'translateY(-50%)'
+                        }}
+                      />
+                      {/* Marcador de fim */}
+                      <div 
+                        className="absolute top-1/2 transform -translate-y-1/2 w-2 h-4 bg-foreground rounded-sm border border-background shadow-sm"
+                        style={{
+                          left: `${task.startPosition + task.width}%`,
+                          transform: 'translateX(-100%) translateY(-50%)'
                         }}
                       />
                     </div>

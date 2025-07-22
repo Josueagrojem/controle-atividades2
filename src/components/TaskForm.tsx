@@ -17,6 +17,7 @@ const taskSchema = z.object({
   sharepointId: z.string().min(1, 'ID do SharePoint é obrigatório'),
   responsible: z.string().min(1, 'Responsável é obrigatório'),
   involved: z.array(z.string()).default([]),
+  startDate: z.string().min(1, 'Data de início é obrigatória'),
   deadline: z.string().min(1, 'Prazo é obrigatório'),
   description: z.string().optional()
 });
@@ -36,6 +37,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose, editTask }) => {
       sharepointId: editTask?.sharepointId || '',
       responsible: editTask?.responsible || '',
       involved: editTask?.involved || [],
+      startDate: editTask?.startDate || '',
       deadline: editTask?.deadline || '',
       description: editTask?.description || ''
     }
@@ -125,6 +127,21 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose, editTask }) => {
               />
               {errors.responsible && (
                 <p className="text-sm text-destructive">{errors.responsible.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="startDate" className="text-sm font-medium text-foreground">
+                Data de Início
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                {...register('startDate')}
+                className="bg-background border-border focus:border-primary"
+              />
+              {errors.startDate && (
+                <p className="text-sm text-destructive">{errors.startDate.message}</p>
               )}
             </div>
 

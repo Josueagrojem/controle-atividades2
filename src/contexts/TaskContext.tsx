@@ -87,7 +87,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    setTasks(prev => [...prev, newTask]);
+    console.log('Adding new task:', newTask);
+    setTasks(prev => {
+      const updated = [...prev, newTask];
+      console.log('Updated tasks array:', updated);
+      return updated;
+    });
   };
 
   const updateTask = (id: string, updates: Partial<Task>) => {

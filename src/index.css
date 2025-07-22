@@ -17,8 +17,8 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
@@ -34,31 +34,32 @@ All colors MUST be HSL.
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --ring: 24 95% 53%;
 
     --radius: 0.75rem;
 
-    /* Status colors */
-    --pending: 43 96% 56%;
-    --pending-foreground: 26 83% 14%;
+    /* Status colors - Corporate Orange & Green Theme */
+    --pending: 39 100% 50%;
+    --pending-foreground: 0 0% 100%;
     
-    --progress: 217 91% 60%;
+    --progress: 24 95% 53%;
     --progress-foreground: 0 0% 100%;
     
-    --review: 38 92% 50%;
-    --review-foreground: 26 83% 14%;
+    --review: 45 93% 47%;
+    --review-foreground: 0 0% 100%;
     
-    --completed: 142 71% 45%;
+    --completed: 142 76% 36%;
     --completed-foreground: 0 0% 100%;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(220 14.3% 98%));
+    /* Gradients - Corporate Theme */
+    --gradient-primary: linear-gradient(135deg, hsl(24 95% 53%), hsl(32 95% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(142 76% 36%), hsl(134 76% 43%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(24 100% 98%));
     
     /* Shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(220 13% 91% / 0.6);
-    --shadow-medium: 0 4px 16px -4px hsl(220 13% 91% / 0.8);
-    --shadow-strong: 0 8px 32px -8px hsl(220 13% 91% / 1);
+    --shadow-soft: 0 2px 8px -2px hsl(24 95% 53% / 0.1);
+    --shadow-medium: 0 4px 16px -4px hsl(24 95% 53% / 0.15);
+    --shadow-strong: 0 8px 32px -8px hsl(24 95% 53% / 0.2);
 
     --sidebar-background: 0 0% 98%;
 
@@ -87,8 +88,8 @@ All colors MUST be HSL.
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -104,23 +105,24 @@ All colors MUST be HSL.
 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 262 83% 58%;
+    --ring: 24 95% 53%;
 
-    /* Status colors - Dark mode */
-    --pending: 43 96% 56%;
-    --pending-foreground: 26 83% 14%;
+    /* Status colors - Dark mode Corporate Theme */
+    --pending: 39 100% 60%;
+    --pending-foreground: 0 0% 100%;
     
-    --progress: 217 91% 60%;
+    --progress: 24 95% 53%;
     --progress-foreground: 0 0% 100%;
     
-    --review: 38 92% 50%;
-    --review-foreground: 26 83% 14%;
+    --review: 45 93% 57%;
+    --review-foreground: 0 0% 100%;
     
-    --completed: 142 71% 45%;
+    --completed: 142 76% 46%;
     --completed-foreground: 0 0% 100%;
     
-    /* Gradients - Dark mode */
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%));
+    /* Gradients - Dark mode Corporate Theme */
+    --gradient-primary: linear-gradient(135deg, hsl(24 95% 53%), hsl(32 95% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(142 76% 46%), hsl(134 76% 53%));
     --gradient-card: linear-gradient(135deg, hsl(240 10% 3.9%), hsl(240 3.7% 15.9%));
     
     /* Shadows - Dark mode */

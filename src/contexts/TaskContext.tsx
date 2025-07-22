@@ -1,0 +1,112 @@
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Task, TaskFormData, TaskStatus } from '@/types/task';
+
+interface TaskContextType {
+  tasks: Task[];
+  addTask: (taskData: TaskFormData) => void;
+  updateTask: (id: string, updates: Partial<Task>) => void;
+  deleteTask: (id: string) => void;
+  updateTaskStatus: (id: string, status: TaskStatus) => void;
+}
+
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
+
+export const useTask = () => {
+  const context = useContext(TaskContext);
+  if (context === undefined) {
+    throw new Error('useTask must be used within a TaskProvider');
+  }
+  return context;
+};
+
+interface TaskProviderProps {
+  children: ReactNode;
+}
+
+export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: '1',
+      title: 'Configurar ambiente de desenvolvimento',
+      sharepointId: 'SP001',
+      responsible: 'João Silva',
+      deadline: '2024-08-15',
+      status: 'completed',
+      description: 'Configurar todos os ambientes necessários para o projeto',
+      createdAt: '2024-07-20T10:00:00Z',
+      updatedAt: '2024-07-22T14:30:00Z'
+    },
+    {
+      id: '2',
+      title: 'Implementar sistema de autenticação',
+      sharepointId: 'SP002',
+      responsible: 'Maria Santos',
+      deadline: '2024-08-20',
+      status: 'progress',
+      description: 'Desenvolver login e controle de acesso',
+      createdAt: '2024-07-21T09:00:00Z',
+      updatedAt: '2024-07-22T16:00:00Z'
+    },
+    {
+      id: '3',
+      title: 'Criar interface do usuário',
+      sharepointId: 'SP003',
+      responsible: 'Pedro Costa',
+      deadline: '2024-08-25',
+      status: 'review',
+      description: 'Desenvolver todas as telas principais',
+      createdAt: '2024-07-22T08:00:00Z',
+      updatedAt: '2024-07-22T18:00:00Z'
+    },
+    {
+      id: '4',
+      title: 'Testes de integração',
+      sharepointId: 'SP004',
+      responsible: 'Ana Oliveira',
+      deadline: '2024-08-30',
+      status: 'pending',
+      description: 'Executar testes completos do sistema',
+      createdAt: '2024-07-22T11:00:00Z',
+      updatedAt: '2024-07-22T11:00:00Z'
+    }
+  ]);
+
+  const addTask = (taskData: TaskFormData) => {
+    const newTask: Task = {
+      id: Date.now().toString(),
+      ...taskData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setTasks(prev => [...prev, newTask]);
+  };
+
+  const updateTask = (id: string, updates: Partial<Task>) => {
+    setTasks(prev => prev.map(task => 
+      task.id === id 
+        ? { ...task, ...updates, updatedAt: new Date().toISOString() }
+        : task
+    ));
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks(prev => prev.filter(task => task.id !== id));
+  };
+
+  const updateTaskStatus = (id: string, status: TaskStatus) => {
+    updateTask(id, { status });
+  };
+
+  return (
+    <TaskContext.Provider value={{
+      tasks,
+      addTask,
+      updateTask,
+      deleteTask,
+      updateTaskStatus
+    }}>
+      {children}
+    </TaskContext.Provider>
+  );
+};

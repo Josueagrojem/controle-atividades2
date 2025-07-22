@@ -64,12 +64,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose, editTask }) => {
   };
 
   const onSubmit = (data: TaskFormData) => {
-    console.log('Form submitted with data:', data);
     if (editTask) {
-      console.log('Updating task:', editTask.id);
       updateTask(editTask.id, data);
     } else {
-      console.log('Adding new task');
       addTask(data);
     }
     reset();

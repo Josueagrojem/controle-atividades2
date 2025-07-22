@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useTask } from '@/contexts/TaskContext';
-import { TaskFormData } from '@/types/task';
+import { TaskFormData, Task } from '@/types/task';
 import { Plus, X, Users } from 'lucide-react';
 
 const taskSchema = z.object({
@@ -23,15 +23,21 @@ const taskSchema = z.object({
 
 interface TaskFormProps {
   onClose?: () => void;
+  editTask?: Task | null;
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
-  const { addTask } = useTask();
+export const TaskForm: React.FC<TaskFormProps> = ({ onClose, editTask }) => {
+  const { addTask, updateTask } = useTask();
   const [newInvolvedPerson, setNewInvolvedPerson] = useState('');
   const { register, handleSubmit, reset, control, watch, setValue, formState: { errors } } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      involved: []
+      title: editTask?.title || '',
+      sharepointId: editTask?.sharepointId || '',
+      responsible: editTask?.responsible || '',
+      involved: editTask?.involved || [],
+      deadline: editTask?.deadline || '',
+      description: editTask?.description || ''
     }
   });
 
@@ -56,7 +62,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
   };
 
   const onSubmit = (data: TaskFormData) => {
-    addTask(data);
+    if (editTask) {
+      updateTask(editTask.id, data);
+    } else {
+      addTask(data);
+    }
     reset();
     setNewInvolvedPerson('');
     onClose?.();
@@ -67,7 +77,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
       <CardHeader className="pb-4">
         <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
           <Plus className="h-5 w-5 text-primary" />
-          Nova Atividade
+          {editTask ? 'Editar Atividade' : 'Nova Atividade'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -202,7 +212,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
               type="submit" 
               className="bg-gradient-primary hover:opacity-90 text-primary-foreground font-medium px-6"
             >
-              Criar Atividade
+              {editTask ? 'Salvar Alterações' : 'Criar Atividade'}
             </Button>
             {onClose && (
               <Button 

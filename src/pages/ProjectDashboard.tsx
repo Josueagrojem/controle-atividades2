@@ -8,7 +8,7 @@ import { KanbanBoard } from '@/components/KanbanBoard';
 import { GanttChart } from '@/components/GanttChart';
 import { TaskFilter } from '@/components/TaskFilter';
 import { useTask } from '@/contexts/TaskContext';
-import { TaskStatus } from '@/types/task';
+import { TaskStatus, Task } from '@/types/task';
 import { Plus, BarChart3, Kanban, Calendar, CheckCircle, Clock, AlertCircle, PlayCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +20,7 @@ export default function ProjectDashboard() {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus | null>(null);
   const [responsibleFilter, setResponsibleFilter] = useState('');
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const stats = {
     total: tasks.length,
@@ -44,6 +45,16 @@ export default function ProjectDashboard() {
 
   const handleResponsibleFilterChange = (value: string) => {
     setResponsibleFilter(value);
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+    setShowTaskForm(true);
+  };
+
+  const handleCloseTaskForm = () => {
+    setShowTaskForm(false);
+    setEditingTask(null);
   };
 
   return (
@@ -193,7 +204,7 @@ export default function ProjectDashboard() {
             responsibleFilter={responsibleFilter}
           />
         ) : (
-          <KanbanBoard />
+          <KanbanBoard onEditTask={handleEditTask} />
         )}
       </div>
 
@@ -203,7 +214,7 @@ export default function ProjectDashboard() {
           <DialogHeader>
             <DialogTitle className="sr-only">Nova Atividade</DialogTitle>
           </DialogHeader>
-          <TaskForm onClose={() => setShowTaskForm(false)} />
+          <TaskForm onClose={handleCloseTaskForm} editTask={editingTask} />
         </DialogContent>
       </Dialog>
     </div>

@@ -14,7 +14,11 @@ const columns: { id: TaskStatus; title: string; color: string }[] = [
   { id: 'overdue', title: 'ATRASADO', color: 'destructive' }
 ];
 
-export const KanbanBoard: React.FC = () => {
+interface KanbanBoardProps {
+  onEditTask?: (task: Task) => void;
+}
+
+export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onEditTask }) => {
   const { tasks, updateTaskStatus } = useTask();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   
@@ -77,7 +81,7 @@ export const KanbanBoard: React.FC = () => {
                 >
                   <div className="space-y-3">
                     {columnTasks.map((task) => (
-                      <KanbanCard key={task.id} task={task} />
+                      <KanbanCard key={task.id} task={task} onEdit={onEditTask} />
                     ))}
                   </div>
                 </SortableContext>
@@ -89,7 +93,7 @@ export const KanbanBoard: React.FC = () => {
         <DragOverlay>
           {activeTask ? (
             <div className="rotate-3 opacity-90">
-              <KanbanCard task={activeTask} isDragging />
+              <KanbanCard task={activeTask} isDragging onEdit={onEditTask} />
             </div>
           ) : null}
         </DragOverlay>

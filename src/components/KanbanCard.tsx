@@ -13,9 +13,10 @@ import { useTask } from '@/contexts/TaskContext';
 interface KanbanCardProps {
   task: Task;
   isDragging?: boolean;
+  onEdit?: (task: Task) => void;
 }
 
-export const KanbanCard: React.FC<KanbanCardProps> = ({ task, isDragging = false }) => {
+export const KanbanCard: React.FC<KanbanCardProps> = ({ task, isDragging = false, onEdit }) => {
   const { deleteTask } = useTask();
   const {
     attributes,
@@ -66,6 +67,14 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ task, isDragging = false
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.(task);
+                }}
+              >
+                Editar
+              </DropdownMenuItem>
               <DropdownMenuItem 
                 className="text-destructive hover:text-destructive focus:text-destructive"
                 onClick={(e) => {

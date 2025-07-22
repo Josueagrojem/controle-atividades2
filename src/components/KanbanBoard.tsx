@@ -8,10 +8,10 @@ import { Task, TaskStatus } from '@/types/task';
 import { useState } from 'react';
 
 const columns: { id: TaskStatus; title: string; color: string }[] = [
-  { id: 'pending', title: 'Pendente', color: 'pending' },
-  { id: 'progress', title: 'Em Progresso', color: 'progress' },
-  { id: 'review', title: 'Em Revisão', color: 'review' },
-  { id: 'completed', title: 'Concluído', color: 'completed' }
+  { id: 'todo', title: 'À FAZER', color: 'pending' },
+  { id: 'doing', title: 'FAZENDO', color: 'progress' },
+  { id: 'done', title: 'FEITO', color: 'completed' },
+  { id: 'overdue', title: 'ATRASADO', color: 'destructive' }
 ];
 
 export const KanbanBoard: React.FC = () => {

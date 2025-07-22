@@ -19,11 +19,10 @@ export default function ProjectDashboard() {
 
   const stats = {
     total: tasks.length,
-    pending: tasks.filter(t => t.status === 'pending').length,
-    progress: tasks.filter(t => t.status === 'progress').length,
-    review: tasks.filter(t => t.status === 'review').length,
-    completed: tasks.filter(t => t.status === 'completed').length,
-    overdue: tasks.filter(t => new Date(t.deadline) < new Date() && t.status !== 'completed').length
+    todo: tasks.filter(t => t.status === 'todo').length,
+    doing: tasks.filter(t => t.status === 'doing').length,
+    done: tasks.filter(t => t.status === 'done').length,
+    overdue: tasks.filter(t => t.status === 'overdue').length
   };
 
   return (
@@ -53,24 +52,14 @@ export default function ProjectDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
-            <Card className="bg-background border-border shadow-soft">
-              <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                </div>
-                <div className="text-2xl font-bold text-foreground">{stats.total}</div>
-                <div className="text-xs text-muted-foreground">Total</div>
-              </CardContent>
-            </Card>
-
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <Card className="bg-background border-border shadow-soft">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Clock className="h-5 w-5 text-pending" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">{stats.pending}</div>
-                <div className="text-xs text-muted-foreground">Pendente</div>
+                <div className="text-2xl font-bold text-foreground">{stats.todo}</div>
+                <div className="text-xs text-muted-foreground">À Fazer</div>
               </CardContent>
             </Card>
 
@@ -79,18 +68,8 @@ export default function ProjectDashboard() {
                 <div className="flex items-center justify-center mb-2">
                   <PlayCircle className="h-5 w-5 text-progress" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">{stats.progress}</div>
-                <div className="text-xs text-muted-foreground">Progresso</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-background border-border shadow-soft">
-              <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <AlertCircle className="h-5 w-5 text-review" />
-                </div>
-                <div className="text-2xl font-bold text-foreground">{stats.review}</div>
-                <div className="text-xs text-muted-foreground">Revisão</div>
+                <div className="text-2xl font-bold text-foreground">{stats.doing}</div>
+                <div className="text-xs text-muted-foreground">Fazendo</div>
               </CardContent>
             </Card>
 
@@ -99,8 +78,8 @@ export default function ProjectDashboard() {
                 <div className="flex items-center justify-center mb-2">
                   <CheckCircle className="h-5 w-5 text-completed" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">{stats.completed}</div>
-                <div className="text-xs text-muted-foreground">Concluído</div>
+                <div className="text-2xl font-bold text-foreground">{stats.done}</div>
+                <div className="text-xs text-muted-foreground">Feito</div>
               </CardContent>
             </Card>
 

@@ -35,7 +35,7 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ task, isDragging = false
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
-  const isOverdue = new Date(task.deadline) < new Date() && task.status !== 'completed';
+  const isOverdue = new Date(task.deadline) < new Date() && task.status !== 'done';
 
   return (
     <Card

@@ -29,8 +29,8 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
           "px-2 py-1 rounded-full text-xs font-medium",
           color === 'pending' && "bg-pending text-pending-foreground",
           color === 'progress' && "bg-progress text-progress-foreground", 
-          color === 'review' && "bg-review text-review-foreground",
-          color === 'completed' && "bg-completed text-completed-foreground"
+          color === 'completed' && "bg-completed text-completed-foreground",
+          color === 'destructive' && "bg-destructive text-destructive-foreground"
         )}>
           {count}
         </span>

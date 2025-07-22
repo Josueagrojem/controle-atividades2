@@ -39,7 +39,7 @@ export const GanttChart: React.FC = () => {
       return {
         ...task,
         position: Math.max(0, Math.min(100, position)),
-        isOverdue: taskDate < new Date() && task.status !== 'completed'
+        isOverdue: taskDate < new Date() && task.status !== 'done'
       };
     });
     
@@ -52,19 +52,19 @@ export const GanttChart: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-completed';
-      case 'progress': return 'bg-progress';
-      case 'review': return 'bg-review';
+      case 'done': return 'bg-completed';
+      case 'doing': return 'bg-progress';
+      case 'overdue': return 'bg-destructive';
       default: return 'bg-pending';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'completed': return 'Concluído';
-      case 'progress': return 'Em Progresso';
-      case 'review': return 'Em Revisão';
-      default: return 'Pendente';
+      case 'done': return 'Feito';
+      case 'doing': return 'Fazendo';
+      case 'overdue': return 'Atrasado';
+      default: return 'À Fazer';
     }
   };
 
@@ -133,10 +133,10 @@ export const GanttChart: React.FC = () => {
                           variant="outline" 
                           className={cn(
                             "text-xs",
-                            task.status === 'completed' && "border-completed text-completed",
-                            task.status === 'progress' && "border-progress text-progress",
-                            task.status === 'review' && "border-review text-review",
-                            task.status === 'pending' && "border-pending text-pending"
+                            task.status === 'done' && "border-completed text-completed",
+                            task.status === 'doing' && "border-progress text-progress",
+                            task.status === 'overdue' && "border-destructive text-destructive",
+                            task.status === 'todo' && "border-pending text-pending"
                           )}
                         >
                           {getStatusText(task.status)}
@@ -183,19 +183,15 @@ export const GanttChart: React.FC = () => {
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-pending rounded-full"></div>
-                <span className="text-sm text-muted-foreground">Pendente</span>
+                <span className="text-sm text-muted-foreground">À Fazer</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-progress rounded-full"></div>
-                <span className="text-sm text-muted-foreground">Em Progresso</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-review rounded-full"></div>
-                <span className="text-sm text-muted-foreground">Em Revisão</span>
+                <span className="text-sm text-muted-foreground">Fazendo</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-completed rounded-full"></div>
-                <span className="text-sm text-muted-foreground">Concluído</span>
+                <span className="text-sm text-muted-foreground">Feito</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-destructive rounded-full"></div>

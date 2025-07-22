@@ -4,14 +4,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TaskStatus } from '@/types/task';
 
-export const GanttChart: React.FC = () => {
+interface GanttChartProps {
+  statusFilter?: TaskStatus | null;
+  responsibleFilter?: string;
+}
+
+export const GanttChart: React.FC<GanttChartProps> = ({ 
+  statusFilter = null, 
+  responsibleFilter = '' 
+}) => {
   const { tasks } = useTask();
 
   const ganttData = useMemo(() => {
-    if (tasks.length === 0) return { tasks: [], dates: [], startDate: new Date(), endDate: new Date() };
+    // Aplicar filtros
+    let filteredTasks = tasks;
+    
+    if (statusFilter) {
+      filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
+    }
+    
+    if (responsibleFilter.trim()) {
+      filteredTasks = filteredTasks.filter(task => 
+        task.responsible.toLowerCase().includes(responsibleFilter.toLowerCase())
+      );
+    }
 
-    const sortedTasks = [...tasks].sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+    if (filteredTasks.length === 0) return { tasks: [], dates: [], startDate: new Date(), endDate: new Date() };
+
+    const sortedTasks = [...filteredTasks].sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
     
     const allDates = sortedTasks.map(task => new Date(task.deadline));
     const startDate = new Date(Math.min(...allDates.map(d => d.getTime())));
@@ -44,7 +66,7 @@ export const GanttChart: React.FC = () => {
     });
     
     return { tasks: tasksWithPositions, dates, startDate, endDate };
-  }, [tasks]);
+  }, [tasks, statusFilter, responsibleFilter]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
@@ -68,14 +90,23 @@ export const GanttChart: React.FC = () => {
     }
   };
 
-  if (tasks.length === 0) {
+  if (ganttData.tasks.length === 0) {
+    const message = statusFilter || responsibleFilter.trim() 
+      ? 'Nenhuma atividade encontrada com os filtros aplicados' 
+      : 'Nenhuma atividade encontrada';
+    
     return (
       <div className="h-full flex items-center justify-center p-6">
         <Card className="bg-gradient-card border-none shadow-medium">
           <CardContent className="p-8 text-center">
             <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">Nenhuma atividade encontrada</h3>
-            <p className="text-muted-foreground">Adicione algumas atividades para visualizar o cronograma Gantt.</p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">{message}</h3>
+            <p className="text-muted-foreground">
+              {statusFilter || responsibleFilter.trim() 
+                ? 'Tente ajustar os filtros para ver mais resultados.' 
+                : 'Adicione algumas atividades para visualizar o cronograma Gantt.'
+              }
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -89,6 +120,11 @@ export const GanttChart: React.FC = () => {
           <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
             Cronograma Gantt
+            {(statusFilter || responsibleFilter.trim()) && (
+              <span className="text-sm font-normal text-muted-foreground">
+                ({ganttData.tasks.length} atividade{ganttData.tasks.length !== 1 ? 's' : ''})
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="h-full overflow-auto">

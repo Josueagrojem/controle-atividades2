@@ -6,7 +6,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { TaskForm } from '@/components/TaskForm';
 import { KanbanBoard } from '@/components/KanbanBoard';
 import { GanttChart } from '@/components/GanttChart';
+import { TaskFilter } from '@/components/TaskFilter';
 import { useTask } from '@/contexts/TaskContext';
+import { TaskStatus } from '@/types/task';
 import { Plus, BarChart3, Kanban, Calendar, CheckCircle, Clock, AlertCircle, PlayCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,6 +18,8 @@ export default function ProjectDashboard() {
   const { tasks } = useTask();
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<TaskStatus | null>(null);
+  const [responsibleFilter, setResponsibleFilter] = useState('');
 
   const stats = {
     total: tasks.length,
@@ -23,6 +27,23 @@ export default function ProjectDashboard() {
     doing: tasks.filter(t => t.status === 'doing').length,
     done: tasks.filter(t => t.status === 'done').length,
     overdue: tasks.filter(t => t.status === 'overdue').length
+  };
+
+  const handleStatusClick = (status: TaskStatus) => {
+    if (selectedStatus === status) {
+      setSelectedStatus(null);
+    } else {
+      setSelectedStatus(status);
+      setViewMode('gantt'); // Sempre mostrar Gantt quando filtrar por status
+    }
+  };
+
+  const handleClearStatusFilter = () => {
+    setSelectedStatus(null);
+  };
+
+  const handleResponsibleFilterChange = (value: string) => {
+    setResponsibleFilter(value);
   };
 
   return (
@@ -53,7 +74,13 @@ export default function ProjectDashboard() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <Card className="bg-background border-border shadow-soft">
+            <Card 
+              className={cn(
+                "bg-background border-border shadow-soft cursor-pointer transition-all hover:shadow-medium hover:scale-105",
+                selectedStatus === 'todo' && "ring-2 ring-pending bg-pending/5"
+              )}
+              onClick={() => handleStatusClick('todo')}
+            >
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Clock className="h-5 w-5 text-pending" />
@@ -63,7 +90,13 @@ export default function ProjectDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border shadow-soft">
+            <Card 
+              className={cn(
+                "bg-background border-border shadow-soft cursor-pointer transition-all hover:shadow-medium hover:scale-105",
+                selectedStatus === 'doing' && "ring-2 ring-progress bg-progress/5"
+              )}
+              onClick={() => handleStatusClick('doing')}
+            >
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <PlayCircle className="h-5 w-5 text-progress" />
@@ -73,7 +106,13 @@ export default function ProjectDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border shadow-soft">
+            <Card 
+              className={cn(
+                "bg-background border-border shadow-soft cursor-pointer transition-all hover:shadow-medium hover:scale-105",
+                selectedStatus === 'done' && "ring-2 ring-completed bg-completed/5"
+              )}
+              onClick={() => handleStatusClick('done')}
+            >
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <CheckCircle className="h-5 w-5 text-completed" />
@@ -83,7 +122,13 @@ export default function ProjectDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border shadow-soft">
+            <Card 
+              className={cn(
+                "bg-background border-border shadow-soft cursor-pointer transition-all hover:shadow-medium hover:scale-105",
+                selectedStatus === 'overdue' && "ring-2 ring-destructive bg-destructive/5"
+              )}
+              onClick={() => handleStatusClick('overdue')}
+            >
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <AlertCircle className="h-5 w-5 text-destructive" />
@@ -94,41 +139,62 @@ export default function ProjectDashboard() {
             </Card>
           </div>
 
-          {/* View Toggle */}
-          <div className="flex items-center gap-2 mt-6">
-            <Button
-              variant={viewMode === 'kanban' ? 'default' : 'outline'}
-              onClick={() => setViewMode('kanban')}
-              className={cn(
-                "font-medium",
-                viewMode === 'kanban' 
-                  ? "bg-gradient-primary text-primary-foreground" 
-                  : "border-border hover:bg-muted"
-              )}
-            >
-              <Kanban className="h-4 w-4 mr-2" />
-              Kanban
-            </Button>
-            <Button
-              variant={viewMode === 'gantt' ? 'default' : 'outline'}
-              onClick={() => setViewMode('gantt')}
-              className={cn(
-                "font-medium",
-                viewMode === 'gantt' 
-                  ? "bg-gradient-primary text-primary-foreground" 
-                  : "border-border hover:bg-muted"
-              )}
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              Gantt
-            </Button>
-          </div>
+          {/* View Toggle - Only show if no status filter is active */}
+          {!selectedStatus && (
+            <div className="flex items-center gap-2 mt-6">
+              <Button
+                variant={viewMode === 'kanban' ? 'default' : 'outline'}
+                onClick={() => setViewMode('kanban')}
+                className={cn(
+                  "font-medium",
+                  viewMode === 'kanban' 
+                    ? "bg-gradient-primary text-primary-foreground" 
+                    : "border-border hover:bg-muted"
+                )}
+              >
+                <Kanban className="h-4 w-4 mr-2" />
+                Kanban
+              </Button>
+              <Button
+                variant={viewMode === 'gantt' ? 'default' : 'outline'}
+                onClick={() => setViewMode('gantt')}
+                className={cn(
+                  "font-medium",
+                  viewMode === 'gantt' 
+                    ? "bg-gradient-primary text-primary-foreground" 
+                    : "border-border hover:bg-muted"
+                )}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Gantt
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1">
-        {viewMode === 'kanban' ? <KanbanBoard /> : <GanttChart />}
+        {/* Show filters when status is selected or when in gantt mode */}
+        {(selectedStatus || viewMode === 'gantt') && (
+          <div className="p-6 pb-0">
+            <TaskFilter
+              responsibleFilter={responsibleFilter}
+              onResponsibleFilterChange={handleResponsibleFilterChange}
+              selectedStatus={selectedStatus}
+              onStatusFilterClear={handleClearStatusFilter}
+            />
+          </div>
+        )}
+        
+        {selectedStatus || viewMode === 'gantt' ? (
+          <GanttChart 
+            statusFilter={selectedStatus} 
+            responsibleFilter={responsibleFilter}
+          />
+        ) : (
+          <KanbanBoard />
+        )}
       </div>
 
       {/* Task Form Dialog */}

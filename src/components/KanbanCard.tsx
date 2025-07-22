@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User, Hash, MoreVertical } from 'lucide-react';
+import { Calendar, User, Hash, MoreVertical, Users } from 'lucide-react';
 import { Task } from '@/types/task';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -95,6 +95,26 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ task, isDragging = false
             <User className="h-3 w-3" />
             <span>{task.responsible}</span>
           </div>
+
+          {task.involved && task.involved.length > 0 && (
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Users className="h-3 w-3" />
+                <span>Envolvidos:</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {task.involved.map((person, index) => (
+                  <Badge
+                    key={index}
+                    variant="outline"
+                    className="text-xs px-1.5 py-0.5 bg-primary/5 border-primary/20 text-primary"
+                  >
+                    {person}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
           
           <div className="flex items-center justify-between">
             <div className={cn(

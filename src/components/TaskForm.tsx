@@ -1,5 +1,5 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -7,14 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useTask } from '@/contexts/TaskContext';
 import { TaskFormData } from '@/types/task';
-import { Plus } from 'lucide-react';
+import { Plus, X, Users } from 'lucide-react';
 
 const taskSchema = z.object({
   title: z.string().min(1, 'Título é obrigatório'),
   sharepointId: z.string().min(1, 'ID do SharePoint é obrigatório'),
   responsible: z.string().min(1, 'Responsável é obrigatório'),
+  involved: z.array(z.string()).default([]),
   deadline: z.string().min(1, 'Prazo é obrigatório'),
   description: z.string().optional()
 });
@@ -25,13 +27,38 @@ interface TaskFormProps {
 
 export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
   const { addTask } = useTask();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<TaskFormData>({
-    resolver: zodResolver(taskSchema)
+  const [newInvolvedPerson, setNewInvolvedPerson] = useState('');
+  const { register, handleSubmit, reset, control, watch, setValue, formState: { errors } } = useForm<TaskFormData>({
+    resolver: zodResolver(taskSchema),
+    defaultValues: {
+      involved: []
+    }
   });
+
+  const watchedInvolved = watch('involved');
+
+  const addInvolvedPerson = () => {
+    if (newInvolvedPerson.trim() && !watchedInvolved.includes(newInvolvedPerson.trim())) {
+      setValue('involved', [...watchedInvolved, newInvolvedPerson.trim()]);
+      setNewInvolvedPerson('');
+    }
+  };
+
+  const removeInvolvedPerson = (personToRemove: string) => {
+    setValue('involved', watchedInvolved.filter(person => person !== personToRemove));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addInvolvedPerson();
+    }
+  };
 
   const onSubmit = (data: TaskFormData) => {
     addTask(data);
     reset();
+    setNewInvolvedPerson('');
     onClose?.();
   };
 
@@ -105,6 +132,56 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose }) => {
                 <p className="text-sm text-destructive">{errors.deadline.message}</p>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-foreground flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Envolvidos
+            </Label>
+            
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                placeholder="Digite o nome da pessoa"
+                value={newInvolvedPerson}
+                onChange={(e) => setNewInvolvedPerson(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="bg-background border-border focus:border-primary flex-1"
+              />
+              <Button
+                type="button"
+                onClick={addInvolvedPerson}
+                variant="outline"
+                className="px-3 border-border hover:bg-muted"
+                disabled={!newInvolvedPerson.trim()}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {watchedInvolved.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {watchedInvolved.map((person, index) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 px-2 py-1"
+                  >
+                    {person}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeInvolvedPerson(person)}
+                      className="h-4 w-4 p-0 hover:bg-primary/20 ml-1"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

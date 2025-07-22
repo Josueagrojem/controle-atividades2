@@ -5,6 +5,7 @@ export interface Task {
   title: string;
   sharepointId: string;
   responsible: string;
+  involved: string[];
   deadline: string;
   status: TaskStatus;
   description?: string;
@@ -16,6 +17,7 @@ export interface TaskFormData {
   title: string;
   sharepointId: string;
   responsible: string;
+  involved: string[];
   deadline: string;
   description?: string;
 }

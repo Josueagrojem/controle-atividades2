@@ -48,14 +48,14 @@ export const TaskFilter: React.FC<TaskFilterProps> = ({
           <div className="flex-1 space-y-2">
             <Label htmlFor="responsible-filter" className="text-sm font-medium text-foreground flex items-center gap-2">
               <User className="h-4 w-4" />
-              Filtrar por Responsável
+              Filtrar por Responsável ou Envolvido
             </Label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="responsible-filter"
                 type="text"
-                placeholder="Digite o nome do responsável..."
+                placeholder="Digite o nome da pessoa (responsável ou envolvido)..."
                 value={responsibleFilter}
                 onChange={(e) => onResponsibleFilterChange(e.target.value)}
                 className="pl-10 bg-background border-border focus:border-primary"

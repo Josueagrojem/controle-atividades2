@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTask } from '@/contexts/TaskContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User, Hash } from 'lucide-react';
+import { Calendar, User, Hash, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TaskStatus } from '@/types/task';
 
@@ -27,7 +27,8 @@ export const GanttChart: React.FC<GanttChartProps> = ({
     
     if (responsibleFilter.trim()) {
       filteredTasks = filteredTasks.filter(task => 
-        task.responsible.toLowerCase().includes(responsibleFilter.toLowerCase())
+        task.responsible.toLowerCase().includes(responsibleFilter.toLowerCase()) ||
+        task.involved.some(person => person.toLowerCase().includes(responsibleFilter.toLowerCase()))
       );
     }
 
@@ -162,6 +163,12 @@ export const GanttChart: React.FC<GanttChartProps> = ({
                             <Calendar className="h-3 w-3" />
                             <span>{formatDate(new Date(task.deadline))}</span>
                           </div>
+                          {task.involved && task.involved.length > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              <span>+{task.involved.length} envolvido{task.involved.length > 1 ? 's' : ''}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

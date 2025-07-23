@@ -19,6 +19,7 @@ const taskSchema = z.object({
   involved: z.array(z.string()).default([]),
   startDate: z.string().min(1, 'Data de início é obrigatória'),
   deadline: z.string().min(1, 'Prazo é obrigatório'),
+  status: z.enum(['todo', 'doing', 'done', 'overdue']).default('todo'),
   description: z.string().optional()
 });
 
@@ -39,6 +40,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose, editTask }) => {
       involved: editTask?.involved || [],
       startDate: editTask?.startDate || '',
       deadline: editTask?.deadline || '',
+      status: editTask?.status || 'todo',
       description: editTask?.description || ''
     }
   });

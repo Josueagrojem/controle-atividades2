@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 type ViewMode = 'kanban' | 'gantt';
 
 export default function ProjectDashboard() {
-  const { tasks } = useTask();
+  const { tasks, loading } = useTask();
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus | null>(null);
@@ -56,6 +56,17 @@ export default function ProjectDashboard() {
     setShowTaskForm(false);
     setEditingTask(null);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando tarefas...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

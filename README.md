@@ -1,73 +1,80 @@
-# Welcome to your Lovable project
+# Controle de Atividades - SAP MOTTA 2035
 
-## Project info
+Sistema de gerenciamento de tarefas com visualização Kanban e Gantt, integrado ao Supabase para armazenamento compartilhado.
 
-**URL**: https://lovable.dev/projects/1cdd39d3-9cc4-4141-bb78-3394cb66de80
+## ✨ Funcionalidades
 
-## How can I edit this code?
+- 📋 **Gestão Completa de Tarefas**: Criar, editar e deletar atividades
+- 🔄 **Visualizações Múltiplas**: Kanban e Gantt Chart
+- 👥 **Colaboração**: Dados sincronizados entre usuários
+- 📊 **Dashboard**: Estatísticas de progresso em tempo real
+- 🎯 **Filtros**: Por status e responsável
+- 💾 **Persistência**: Dados salvos no Supabase (compartilhado)
 
-There are several ways of editing your application.
+## 🛠️ Configuração do Supabase
 
-**Use Lovable**
+### 1. Configurar Credenciais
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1cdd39d3-9cc4-4141-bb78-3394cb66de80) and start prompting.
+No arquivo `src/lib/supabase.ts`, substitua pelas suas credenciais:
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```typescript
+const supabaseUrl = 'SUA_URL_DO_SUPABASE'
+const supabaseAnonKey = 'SUA_CHAVE_ANONIMA'
 ```
 
-**Edit a file directly in GitHub**
+### 2. Executar Migração
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Execute o SQL em `supabase/migrations/001_create_tasks_table.sql` no SQL Editor do Supabase.
 
-**Use GitHub Codespaces**
+### 3. Migração Automática
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Ao acessar o sistema pela primeira vez, as tarefas do localStorage serão automaticamente migradas para o banco
+- Dados ficam disponíveis para todos os usuários
 
-## What technologies are used for this project?
+## 🚀 Tecnologias
 
-This project is built with:
+- **React 18** com TypeScript
+- **Tailwind CSS** para estilização
+- **Supabase** para banco de dados
+- **React Hook Form** + Zod para formulários
+- **Lucide React** para ícones
+- **Shadcn/ui** para componentes
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📱 Como Usar
 
-## How can I deploy this project?
+1. **Conecte ao Supabase** usando o botão verde na interface
+2. **Configure as credenciais** no arquivo supabase.ts
+3. **Execute a migração SQL** no Supabase
+4. **Acesse o sistema** - dados serão migrados automaticamente
 
-Simply open [Lovable](https://lovable.dev/projects/1cdd39d3-9cc4-4141-bb78-3394cb66de80) and click on Share -> Publish.
+## 🔧 Status das Tarefas
 
-## Can I connect a custom domain to my Lovable project?
+- 🕐 **À Fazer** (todo)
+- ⚡ **Fazendo** (doing) 
+- ✅ **Feito** (done)
+- 🚨 **Atrasado** (overdue)
 
-Yes, you can!
+## 👨‍💻 Desenvolvimento
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+# Instalar dependências
+npm install
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# Executar em desenvolvimento
+npm run dev
+
+# Fazer build
+npm run build
+```
+
+## 📋 Próximas Melhorias
+
+- [ ] Autenticação de usuários
+- [ ] Notificações em tempo real
+- [ ] Anexos de arquivos
+- [ ] Relatórios avançados
+- [ ] Integração com SharePoint
+
+---
+
+**Projeto SAP MOTTA 2035** - Sistema de Controle de Atividades

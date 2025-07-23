@@ -21,5 +21,6 @@ export interface TaskFormData {
   involved: string[];
   startDate: string;
   deadline: string;
+  status: TaskStatus;
   description?: string;
 }

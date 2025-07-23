@@ -68,7 +68,7 @@ export default function ProjectDashboard() {
                 Controle de Atividades
               </h1>
               <p className="text-muted-foreground">
-                Gerencie suas atividades de projeto com visões Kanban e Gantt
+                Controle das atividades do projeto SAP MOTTA 2035
               </p>
             </div>
             
